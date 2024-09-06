@@ -1,51 +1,55 @@
-# AndroidBox - A Node Based IDE
+# AndroidBox - A Node-Based IDE
 
-It is an Ide on Node Editor Concept An can Convert The Node's to text At RunTime, an can convert the
-text Code To Node's
+AndroidBox is an innovative IDE that utilizes a node-based editor concept, allowing for dynamic conversion between nodes and text code. It aims to provide an enhanced coding experience by combining the best features of block-based and text-based coding methods.
 
-it is like **Sketchware** But **Sketchware/Sketchware pro** misses some Features
+## Key Features
 
-> 1. Cannot convert text to blocks
+- **Node-to-Text Conversion**: Convert nodes to text code at runtime.
+- **Text-to-Node Conversion**: Seamlessly convert text code back into nodes.
+- **Enhanced Functionality**: Unlike Sketchware, AndroidBox supports text-to-block conversion and offers a versatile coding environment.
 
-> 2. You can Only Add the codes Through Blocks ( At first it supports the feature of a inbuild code
-     editor, But now it has Block's name ' COMMAND BLOCKS '
+## Why AndroidBox?
 
+While tools like Sketchware and Sketchware Pro offer a block-based approach to coding, they lack the ability to convert text into blocks. AndroidBox addresses this limitation by providing:
 
-So I am Aiming To Add Those Featues To a single APP
-An if I can then i will add a plugins sections were you can download The Compiler, Themes, icons,
-Syntex Hilighter Like VS CODE
+1. Conversion between text code and nodes.
+2. Integration of both block-based and text-based coding methods.
 
-**HERE IS THE DESIGN**
+## Future Plans
 
-![Frame 48](https://user-images.githubusercontent.com/67579112/228865415-c6c67ebc-e862-4c76-9454-ffa3f5f23c05.svg)
+AndroidBox will include a plugin section where users can download compilers, themes, icons, and syntax highlighters similar to those available in VS Code.
 
-Services :
+## Build Information
 
-[ Java Code Parser ]
+You can view the current build and updates at [AndroidBox GitHub Actions](https://github.com/Siddhesh2377/AndroidBox/actions).
 
-      Local Path : Available in Apps Build.gradle
+## Design Preview
 
-      Credit :
-      
-          Github Name > https://github.com/javaparser/javaparser
+![Design Preview](https://user-images.githubusercontent.com/67579112/228865415-c6c67ebc-e862-4c76-9454-ffa3f5f23c05.svg)
 
-Custom View :
+## Services
 
-[ Node View ]
+- **Java Code Parser**
+  - **Local Path**: Available in the app's `build.gradle`
+  - **Credits**: [JavaParser](https://github.com/javaparser/javaparser)
 
-    Local Path : AndroidBox/nodes
+- **Custom Views**
+  - **Node View**
+    - **Local Path**: `AndroidBox/nodes`
+    - **Credits**: [android-thinkmap-treeview](https://github.com/guaishouN/android-thinkmap-treeview)
+  
+  - **Code View**
+    - **Local Path**: `AndroidBox/codeview`
+    - **Credits**: [android-thinkmap-treeview](https://github.com/guaishouN/android-thinkmap-treeview)
 
-    Credit :
+## Contributing
 
-         Github > https://github.com/guaishouN/android-thinkmap-treeview
+If you would like to contribute to the development of AndroidBox, please follow the [contribution guidelines](CONTRIBUTING.md).
 
-[ Code View ]
+## License
 
-    Local Path : AndroidBox/codeview
+AndroidBox is licensed under the [MIT License](LICENSE).
 
-    Credit :
+---
 
-          Github > https://github.com/guaishouN/android-thinkmap-treeview
-
-
-
+Feel free to make any additional modifications based on your specific needs or project updates!
