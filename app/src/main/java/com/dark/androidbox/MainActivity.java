@@ -1,7 +1,13 @@
 package com.dark.androidbox;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +22,9 @@ import com.gyso.treeview.line.SmoothLine;
 import com.gyso.treeview.model.NodeModel;
 import com.gyso.treeview.model.TreeModel;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
@@ -29,9 +38,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        treeView = binding.nodeView.treeview;
 
-        Lexer lexer = new Lexer(code());
+
+        treeView = binding.nodeView.treeview;
+        setupSyntaxHighlighter();
+
+        binding.btn.setOnClickListener(view -> {
+            if (!binding.code.getText().toString().isEmpty())
+                loadJava(new StringBuilder(binding.code.getText().toString()));
+        });
+
+    }
+
+
+    private void loadJava(StringBuilder code) {
+        Lexer lexer = new Lexer(code);
         adapter = new NodeViewAdapter();
 
         //binding.txt.setText(lexer.getFields().get(0).getVariables().get(0).getNameAsString() + lexer.getFields().get(0).getVariables().get(0).getType().asString());
@@ -50,8 +71,10 @@ public class MainActivity extends AppCompatActivity {
         treeModel.addNode(node0, node1, node2);
         adapter.setTreeModel(treeModel);
 
-        new Handler(getMainLooper()).postDelayed(() -> treeView.getEditor().focusMidLocation(), 2000);
+        binding.btn.setVisibility(View.GONE);
+        binding.code.setVisibility(View.GONE);
 
+        new Handler(getMainLooper()).postDelayed(() -> treeView.getEditor().focusMidLocation(), 2000);
     }
 
 
@@ -225,4 +248,51 @@ public class MainActivity extends AppCompatActivity {
                 "    }\n" +
                 "}");
     }
+
+    private void setupSyntaxHighlighter() {
+        binding.code.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Remove existing spans
+                ForegroundColorSpan[] spans = s.getSpans(0, s.length(), ForegroundColorSpan.class);
+                for (ForegroundColorSpan span : spans) {
+                    s.removeSpan(span);
+                }
+
+                // Java syntax patterns
+                String keywordPattern = "\\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)\\b";
+                String commentPattern = "//.*|/\\*(?:.|[\\n\\r])*?\\*/";
+                String stringPattern = "\"(.*?)\"";
+                String numberPattern = "\\b\\d+\\b";  // Numbers
+                String annotationPattern = "@\\w+";  // Annotations like @Override
+                String primitiveTypePattern = "\\b(int|char|float|double|boolean|long|short|byte)\\b";  // Primitive types
+
+                // Apply patterns with colors
+                applyPattern(s, keywordPattern, Color.parseColor("#186fa1"));  // Java keywords
+                applyPattern(s, commentPattern, Color.GRAY);  // Comments
+                applyPattern(s, stringPattern, Color.parseColor("#32872f"));  // Strings
+                applyPattern(s, numberPattern, Color.parseColor("#d35400"));  // Numbers (orange)
+                applyPattern(s, annotationPattern, Color.parseColor("#9b59b6"));  // Annotations (purple)
+                applyPattern(s, primitiveTypePattern, Color.parseColor("#2c3e50"));  // Primitive types (dark blue)
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+    }
+
+    private void applyPattern(Editable s, String pattern, int color) {
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(s);
+        while (m.find()) {
+            s.setSpan(new ForegroundColorSpan(color), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+
 }

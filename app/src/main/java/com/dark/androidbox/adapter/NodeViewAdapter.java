@@ -14,6 +14,7 @@ import com.gyso.treeview.adapter.TreeViewHolder;
 import com.gyso.treeview.line.BaseLine;
 import com.gyso.treeview.model.NodeModel;
 
+
 public class NodeViewAdapter extends TreeViewAdapter<NodeData> {
 
     @Override
@@ -27,7 +28,7 @@ public class NodeViewAdapter extends TreeViewAdapter<NodeData> {
         NodeModel<NodeData> data = holder.getNode();
         NodeviewBinding binding = NodeviewBinding.bind(root);
 
-        binding.txt.setText(data.value.code);
+        binding.txt.setJavaCode(data.value.code);
     }
 
     @Override

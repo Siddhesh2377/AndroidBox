@@ -38,6 +38,10 @@ dependencies {
     implementation libs.javaparser.core
 
     implementation project(":nodes")
+    
+    implementation ('com.github.chen0040:android-code-view:1.0.4'){
+        exclude group: 'com.android.support', module: 'support-compat'
+    }
 
     implementation libs.appcompat
     implementation libs.material
