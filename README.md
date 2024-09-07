@@ -40,7 +40,7 @@ You can view the current build and updates at [AndroidBox GitHub Actions](https:
   
   - **Code View**
     - **Local Path**: `AndroidBox/codeview`
-    - **Credits**: [android-thinkmap-treeview](https://github.com/guaishouN/android-thinkmap-treeview)
+    - **Credits**: [Code View](https://amrdeveloper.github.io/CodeView/))
 
 ## Contributing
 
