@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.0"
+androidCodeView = "1.0.4"
 androidxJunit = "1.1.5"
 appcompatVersion = "1.6.1"
 dynamicanimation = "1.0.0"
@@ -15,6 +16,7 @@ constraintlayout = "2.1.4"
 materialVersion = "1.11.0"
 
 [libraries]
+android-code-view = { module = "com.github.chen0040:android-code-view", version.ref = "androidCodeView" }
 appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version.ref = "dynamicanimation" }
 espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }

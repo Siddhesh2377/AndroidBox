@@ -39,7 +39,7 @@ dependencies {
 
     implementation project(":nodes")
     
-    implementation ('com.github.chen0040:android-code-view:1.0.4'){
+    implementation (libs.android.code.view){
         exclude group: 'com.android.support', module: 'support-compat'
     }
 
