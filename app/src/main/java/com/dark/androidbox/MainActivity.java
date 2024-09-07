@@ -1,6 +1,7 @@
 package com.dark.androidbox;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,8 +15,6 @@ import com.gyso.treeview.layout.BoxDownTreeLayoutManager;
 import com.gyso.treeview.line.SmoothLine;
 import com.gyso.treeview.model.NodeModel;
 import com.gyso.treeview.model.TreeModel;
-
-import org.w3c.dom.Node;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,15 +40,18 @@ public class MainActivity extends AppCompatActivity {
         treeView.setAdapter(adapter);
         treeView.setTreeLayoutManager(new BoxDownTreeLayoutManager(this, 20, 20, new SmoothLine()));
 
-        
+
         NodeModel<NodeData> node0 = new NodeModel<>(new NodeData(lexer.getClasses().get(0).getNameAsString(), lexer.getClasses().get(0).toString(), NodeTypes.CLASSES));
         TreeModel<NodeData> treeModel = new TreeModel<>(node0);
         NodeModel<NodeData> node1 = new NodeModel<>(new NodeData(lexer.getMethods().get(0).getNameAsString(), lexer.getMethods().get(0).toString(), NodeTypes.METHODS));
-        NodeModel<NodeData> node2 = new NodeModel<>(new NodeData(lexer.getFields().get(0).getVariables().get(0).getNameAsString(), lexer.getFields().get(0).getVariables().get(0).toString(), NodeTypes.VARIABLES));
+        NodeModel<NodeData> node2 = new NodeModel<>(new NodeData(lexer.getFields().get(0).getVariables().get(0).getNameAsString(), lexer.getFields().get(0).getVariables().get(0).getInitializer().toString(), NodeTypes.VARIABLES));
 
 
         treeModel.addNode(node0, node1, node2);
         adapter.setTreeModel(treeModel);
+
+        new Handler(getMainLooper()).postDelayed(() -> treeView.getEditor().focusMidLocation(), 2000);
+
     }
 
 
