@@ -5,6 +5,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import java.io.StringReader;
 import java.util.List;
@@ -37,5 +38,9 @@ public class Lexer {
                 .filter(method -> method.getNameAsString().equals(method.getDeclarationAsString()))
                 .filter(method -> method.getParameters().isEmpty())
                 .collect(Collectors.toList());
+    }
+
+    public List<MethodCallExpr> getMethodCalls() {
+        return unit.findAll(MethodCallExpr.class);
     }
 }
