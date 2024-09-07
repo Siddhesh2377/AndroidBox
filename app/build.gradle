@@ -37,6 +37,8 @@ dependencies {
 
     implementation libs.javaparser.core
 
+    implementation project(":nodes")
+
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity

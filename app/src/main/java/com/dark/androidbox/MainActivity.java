@@ -4,25 +4,52 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dark.androidbox.adapter.NodeViewAdapter;
 import com.dark.androidbox.databinding.ActivityMainBinding;
+import com.dark.androidbox.model.NodeData;
+import com.dark.androidbox.types.NodeTypes;
+import com.gyso.treeview.GysoTreeView;
+import com.gyso.treeview.adapter.TreeViewAdapter;
+import com.gyso.treeview.layout.BoxDownTreeLayoutManager;
+import com.gyso.treeview.line.SmoothLine;
+import com.gyso.treeview.model.NodeModel;
+import com.gyso.treeview.model.TreeModel;
+
+import org.w3c.dom.Node;
 
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
+
+    GysoTreeView treeView;
+
+    TreeViewAdapter<NodeData> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        treeView = binding.nodeView.treeview;
 
         Lexer lexer = new Lexer(code());
+        adapter = new NodeViewAdapter();
 
         //binding.txt.setText(lexer.getFields().get(0).getVariables().get(0).getNameAsString() + lexer.getFields().get(0).getVariables().get(0).getType().asString());
 
 
+        treeView.setAdapter(adapter);
+        treeView.setTreeLayoutManager(new BoxDownTreeLayoutManager(this, 20, 20, new SmoothLine()));
 
+        
+        NodeModel<NodeData> node0 = new NodeModel<>(new NodeData(lexer.getClasses().get(0).getNameAsString(), lexer.getClasses().get(0).toString(), NodeTypes.CLASSES));
+        TreeModel<NodeData> treeModel = new TreeModel<>(node0);
+        NodeModel<NodeData> node1 = new NodeModel<>(new NodeData(lexer.getMethods().get(0).getNameAsString(), lexer.getMethods().get(0).toString(), NodeTypes.METHODS));
+        NodeModel<NodeData> node2 = new NodeModel<>(new NodeData(lexer.getFields().get(0).getVariables().get(0).getNameAsString(), lexer.getFields().get(0).getVariables().get(0).toString(), NodeTypes.VARIABLES));
+
+
+        treeModel.addNode(node0, node1, node2);
+        adapter.setTreeModel(treeModel);
     }
 
 
