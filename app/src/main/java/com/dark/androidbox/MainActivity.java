@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,6 +24,7 @@ import com.gyso.treeview.layout.BoxHorizonLeftAndRightLayoutManager;
 import com.gyso.treeview.line.SmoothLine;
 import com.gyso.treeview.model.NodeModel;
 import com.gyso.treeview.model.TreeModel;
+import com.gyso.treeview.onNodeEvents;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -135,6 +137,13 @@ public class MainActivity extends AppCompatActivity {
         adapter.setTreeModel(treeModel);
         //TEMP UPDATE THE UI
         updateUI();
+
+        treeView.treeViewContainer.onNodeEvents(new onNodeEvents() {
+            @Override
+            public void onNodeDrop() {
+                Toast.makeText(MainActivity.this, "Dropped", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     //SETUP VIEWS
