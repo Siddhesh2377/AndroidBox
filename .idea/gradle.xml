@@ -11,7 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/codeview" />
-            <option value="$PROJECT_DIR$/nodes" />
+            <option value="$PROJECT_DIR$/node" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

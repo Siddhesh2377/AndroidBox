@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.CompoundButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,8 +12,8 @@ import com.dark.androidbox.adapter.NodeViewAdapter;
 import com.dark.androidbox.codeView.Editor;
 import com.dark.androidbox.databinding.ActivityMainBinding;
 import com.dark.androidbox.model.NodeData;
-import com.dark.androidbox.nodes.BaseNode;
 import com.dark.androidbox.nodes.ClassNode;
+import com.dark.androidbox.nodes.MethodNode;
 import com.dark.androidbox.types.NodeTypes;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -25,16 +26,14 @@ import com.gyso.treeview.model.TreeModel;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static GysoTreeView treeViewStatic;
     //BINDING
     private ActivityMainBinding binding;
-
     //TREEVIEW Variables
     private GysoTreeView treeView;
     private TreeViewAdapter<NodeData> adapter;
-
     //CODE EDITOR Variables
     private Editor editor;
-
     //CODE INIT Variables
     private Lexer lexer;
 
@@ -46,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         treeView = binding.nodeView.treeview;
+        treeViewStatic = binding.nodeView.treeview;
 
         //Init Essentials Objects
         editor = new Editor(binding.code);
@@ -68,15 +68,40 @@ public class MainActivity extends AppCompatActivity {
 
         //Temp Click Fun to Load Nodes
         loadNodes();
+
+        binding.drag.setUseMaterialThemeColors(true);
+        binding.drag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                treeView.getEditor().setWantEdit(!b);
+            }
+        });
     }
 
     //LOADING NODES
     private void loadNodes() {
 
         //Create NODES
-        NodeModel<NodeData> root = createNode(new NodeData(lexer.getClasses().get(0).getNameAsString(), lexer.getClasses().get(0).toString(), NodeTypes.CLASSES, new ClassNode(this)));
-        NodeModel<NodeData> var = createNode(new NodeData("Var", "", NodeTypes.VARIABLES, new BaseNode(this)));
-        NodeModel<NodeData> methods = createNode(new NodeData("Methods", "", NodeTypes.METHODS, new BaseNode(this)));
+        NodeModel<NodeData> root =
+                createNode(new NodeData(
+                        lexer.getClasses().get(0).getNameAsString(),
+                        lexer.getClasses().get(0).toString(),
+                        NodeTypes.CLASSES, new ClassNode(this),
+                        lexer.getClasses()));
+
+        NodeModel<NodeData> var =
+                createNode(new NodeData(
+                        "Var", "",
+                        NodeTypes.VARIABLES,
+                        new ClassNode(this),
+                        lexer.getFields()));
+
+        NodeModel<NodeData> methods =
+                createNode(new NodeData(
+                        "Methods", "",
+                        NodeTypes.METHODS,
+                        new ClassNode(this),
+                        lexer.getMethods()));
 
         //LOAD ROOT-NODE in TREE-MODEL
         TreeModel<NodeData> treeModel = new TreeModel<>(root);
@@ -87,12 +112,23 @@ public class MainActivity extends AppCompatActivity {
         //LOAD Var-NODES in TREE-MODEL
         for (FieldDeclaration declaration : lexer.getFields()) {
             treeModel.addNode(var,
-                    createNode(new NodeData(declaration.getVariables().get(0).getNameAsString(), declaration.getVariables().get(0).getTypeAsString(), NodeTypes.VARIABLES, new BaseNode(this))));
+                    createNode(
+                            new NodeData(
+                                    declaration.getVariables().get(0).getNameAsString(),
+                                    declaration.getVariables().get(0).getTypeAsString(),
+                                    NodeTypes.VARIABLES, new ClassNode(this),
+                                    null)));
         }
         //LOAD Methods-NODES in TREE-MODEL
         for (MethodDeclaration declaration : lexer.getMethods()) {
             treeModel.addNode(methods,
-                    createNode(new NodeData(declaration.getNameAsString(), declaration.toString(), NodeTypes.METHODS, new BaseNode(this))));
+                    createNode(
+                            new NodeData(
+                                    declaration.getNameAsString(),
+                                    declaration.toString(),
+                                    NodeTypes.METHODS,
+                                    new MethodNode(this),
+                                    null)));
         }
 
         //LOAD TREE-MODEL IN ADAPTER

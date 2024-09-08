@@ -4,14 +4,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.dark.androidbox.R;
+import com.dark.androidbox.databinding.ClassNodeBinding;
 
-public class ClassNode extends BaseNode{
+public class ClassNode extends BaseNode {
+
+    private ClassNodeBinding binding;
 
     public ClassNode(Context context) {
         super(context);
@@ -32,6 +32,13 @@ public class ClassNode extends BaseNode{
     @Override
     public void init() {
         super.init();
-        setBackgroundColor(Color.GREEN);
+        binding = ClassNodeBinding.inflate(LayoutInflater.from(getContext()), this, true);
+        setBackgroundColor(Color.WHITE);
+    }
+
+    @Override
+    public void postInit() {
+        super.postInit();
+        binding.title.setText(data.value.title);
     }
 }

@@ -23,5 +23,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "AndroidBox"
 include ':app'
-include ':nodes'
 include ':codeview'
+include ':node'

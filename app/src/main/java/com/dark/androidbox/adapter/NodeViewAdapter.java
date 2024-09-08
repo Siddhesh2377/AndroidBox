@@ -29,7 +29,7 @@ public class NodeViewAdapter extends TreeViewAdapter<NodeData> {
         NodeviewBinding binding = NodeviewBinding.bind(root);
 
         binding.root.removeAllViews();
-        binding.root.addView(data.value.node);
+        binding.root.addView(data.value.node.getNode(data));
         //binding.txt.setText(data.value.title);
     }
 
