@@ -65,12 +65,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Temp Click Fun to Load Nodes
-        binding.btn.setOnClickListener(view -> {
-            String codeText = binding.code.getText().toString();
-            if (!codeText.isEmpty()) {
-                loadNodes();
-            }
-        });
+        loadNodes();
     }
 
     //LOADING NODES
@@ -119,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI() {
         binding.btn.setVisibility(View.GONE);
         binding.code.setVisibility(View.GONE);
-        new Handler(getMainLooper()).postDelayed(() -> treeView.getEditor().focusMidLocation(), 2000);
+        new Handler(getMainLooper()).postDelayed(() -> binding.nodeView.treeview.getEditor().focusMidLocation(), 2000);
     }
 
     //Sample CODE
