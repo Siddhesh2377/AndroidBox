@@ -11,6 +11,8 @@ import com.dark.androidbox.adapter.NodeViewAdapter;
 import com.dark.androidbox.codeView.Editor;
 import com.dark.androidbox.databinding.ActivityMainBinding;
 import com.dark.androidbox.model.NodeData;
+import com.dark.androidbox.nodes.BaseNode;
+import com.dark.androidbox.nodes.ClassNode;
 import com.dark.androidbox.types.NodeTypes;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -72,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
     private void loadNodes() {
 
         //Create NODES
-        NodeModel<NodeData> root = createNode(new NodeData(lexer.getClasses().get(0).getNameAsString(), lexer.getClasses().get(0).toString(), NodeTypes.CLASSES));
-        NodeModel<NodeData> var = createNode(new NodeData("Var", "", NodeTypes.VARIABLES));
-        NodeModel<NodeData> methods = createNode(new NodeData("Methods", "", NodeTypes.METHODS));
+        NodeModel<NodeData> root = createNode(new NodeData(lexer.getClasses().get(0).getNameAsString(), lexer.getClasses().get(0).toString(), NodeTypes.CLASSES, new ClassNode(this)));
+        NodeModel<NodeData> var = createNode(new NodeData("Var", "", NodeTypes.VARIABLES, new BaseNode(this)));
+        NodeModel<NodeData> methods = createNode(new NodeData("Methods", "", NodeTypes.METHODS, new BaseNode(this)));
 
         //LOAD ROOT-NODE in TREE-MODEL
         TreeModel<NodeData> treeModel = new TreeModel<>(root);
@@ -85,12 +87,12 @@ public class MainActivity extends AppCompatActivity {
         //LOAD Var-NODES in TREE-MODEL
         for (FieldDeclaration declaration : lexer.getFields()) {
             treeModel.addNode(var,
-                    createNode(new NodeData(declaration.getVariables().get(0).getNameAsString(), declaration.getVariables().get(0).getTypeAsString(), NodeTypes.VARIABLES)));
+                    createNode(new NodeData(declaration.getVariables().get(0).getNameAsString(), declaration.getVariables().get(0).getTypeAsString(), NodeTypes.VARIABLES, new BaseNode(this))));
         }
         //LOAD Methods-NODES in TREE-MODEL
         for (MethodDeclaration declaration : lexer.getMethods()) {
             treeModel.addNode(methods,
-                    createNode(new NodeData(declaration.getNameAsString(), declaration.toString(), NodeTypes.METHODS)));
+                    createNode(new NodeData(declaration.getNameAsString(), declaration.toString(), NodeTypes.METHODS, new BaseNode(this))));
         }
 
         //LOAD TREE-MODEL IN ADAPTER
