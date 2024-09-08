@@ -42,14 +42,6 @@ You can view the current build and updates at [AndroidBox GitHub Actions](https:
     - **Local Path**: `AndroidBox/codeview`
     - **Credits**: [Code View](https://amrdeveloper.github.io/CodeView/))
 
-## Contributing
-
-If you would like to contribute to the development of AndroidBox, please follow the [contribution guidelines](CONTRIBUTING.md).
-
-## License
-
-AndroidBox is licensed under the [MIT License](LICENSE).
-
 ---
 
-Feel free to make any additional modifications based on your specific needs or project updates!
+Feel free to make any additional modifications based on your specific needs or project updates!, But Give me credit Thoo ;)
