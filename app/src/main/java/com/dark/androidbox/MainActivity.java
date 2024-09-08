@@ -71,13 +71,7 @@ public class MainActivity extends AppCompatActivity {
         //Temp Click Fun to Load Nodes
         loadNodes();
 
-        binding.drag.setUseMaterialThemeColors(true);
-        binding.drag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                treeView.getEditor().setWantEdit(!b);
-            }
-        });
+        binding.drag.setOnCheckedChangeListener((compoundButton, b) -> treeView.getEditor().setWantEdit(!b));
     }
 
     //LOADING NODES

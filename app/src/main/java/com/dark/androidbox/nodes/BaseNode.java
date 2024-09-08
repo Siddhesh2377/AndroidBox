@@ -6,9 +6,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.dark.androidbox.MainActivity;
 import com.dark.androidbox.databinding.BaseNodeBinding;
 import com.dark.androidbox.model.NodeData;
 import com.gyso.treeview.model.NodeModel;
@@ -51,5 +53,12 @@ public class BaseNode extends FrameLayout {
 
     public void postInit() {
 
+        binding.getRoot().setOnLongClickListener(view -> {
+            MainActivity.treeViewStatic.getEditor().removeNodeChildren(data);
+            Toast.makeText(getContext(), "hi", Toast.LENGTH_SHORT).show();
+            return false;
+        });
+
     }
+
 }
