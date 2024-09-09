@@ -36,7 +36,7 @@ You can view the current build and updates at [AndroidBox GitHub Actions](https:
 
 - **Custom Views**
   - **Node View**
-    - **Local Path**: `AndroidBox/nodes`
+    - **Local Path**: `AndroidBox/node`
     - **Credits**: [android-thinkmap-treeview](https://github.com/guaishouN/android-thinkmap-treeview)
   
   - **Code View**
