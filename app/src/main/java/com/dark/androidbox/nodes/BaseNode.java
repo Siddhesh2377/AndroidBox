@@ -53,11 +53,7 @@ public class BaseNode extends FrameLayout {
 
     public void postInit() {
 
-        binding.getRoot().setOnLongClickListener(view -> {
-            MainActivity.treeViewStatic.getEditor().removeNodeChildren(data);
-            Toast.makeText(getContext(), "hi", Toast.LENGTH_SHORT).show();
-            return false;
-        });
+
 
     }
 
