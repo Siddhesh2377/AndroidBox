@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidBox</string>
+    <string name="sample_title">Node Title</string>
 </resources>

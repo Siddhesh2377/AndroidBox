@@ -1,19 +1,19 @@
 [versions]
 agp = "8.6.0"
 androidCodeView = "1.0.4"
-androidxJunit = "1.1.5"
-appcompatVersion = "1.6.1"
+androidxJunit = "1.2.1"
+appcompatVersion = "1.7.0"
 dynamicanimation = "1.0.0"
-espressoCoreVersion = "3.5.1"
+espressoCoreVersion = "3.6.1"
 javaparserCore = "3.26.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-activity = "1.9.1"
+activity = "1.9.2"
 constraintlayout = "2.1.4"
-materialVersion = "1.11.0"
+materialVersion = "1.12.0"
 
 [libraries]
 android-code-view = { module = "com.github.chen0040:android-code-view", version.ref = "androidCodeView" }

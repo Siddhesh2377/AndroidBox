@@ -26,6 +26,8 @@ import com.gyso.treeview.model.TreeModel;
 public class MainActivity extends AppCompatActivity {
 
     public static GysoTreeView treeViewStatic;
+    //NODES
+    NodeModel<NodeData> root, methods, var;
     //BINDING
     private ActivityMainBinding binding;
     //TREEVIEW Variables
@@ -68,33 +70,33 @@ public class MainActivity extends AppCompatActivity {
         //Temp Click Fun to Load Nodes
         loadNodes();
 
-        binding.drag.setOnCheckedChangeListener((compoundButton, b) -> treeView.getEditor().setWantEdit(!b));
+        binding.drag.setOnCheckedChangeListener((compoundButton, b) -> {
+            treeView.getEditor().setWantEdit(b);
+            if (!b) binding.nodeView.treeview.getEditor().focusMidLocation();
+        });
     }
 
     //LOADING NODES
     private void loadNodes() {
 
         //Create NODES
-        NodeModel<NodeData> root =
-                createNode(new NodeData(
+        root = createNode(new NodeData(
                         lexer.getClasses().get(0).getNameAsString(),
                         lexer.getClasses().get(0).toString(),
-                        NodeTypes.CLASSES, new ClassNode(this),
-                        lexer.getClasses()));
+                        NodeTypes.CLASS, new ClassNode(this),
+                lexer.getClasses().get(0)));
 
-        NodeModel<NodeData> var =
-                createNode(new NodeData(
+        var = createNode(new NodeData(
                         "Var", "",
-                        NodeTypes.VARIABLES,
+                        NodeTypes.VARIABLE,
                         new ClassNode(this),
-                        lexer.getFields()));
+                        null));
 
-        NodeModel<NodeData> methods =
-                createNode(new NodeData(
+        methods = createNode(new NodeData(
                         "Methods", "",
-                        NodeTypes.METHODS,
+                        NodeTypes.METHOD,
                         new ClassNode(this),
-                        lexer.getMethods()));
+                        null));
 
         //LOAD ROOT-NODE in TREE-MODEL
         TreeModel<NodeData> treeModel = new TreeModel<>(root);
@@ -109,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
                             new NodeData(
                                     declaration.getVariables().get(0).getNameAsString(),
                                     declaration.getVariables().get(0).getTypeAsString(),
-                                    NodeTypes.VARIABLES, new ClassNode(this),
-                                    null)));
+                                    NodeTypes.VARIABLE, new ClassNode(this),
+                                    declaration)));
         }
         //LOAD Methods-NODES in TREE-MODEL
         for (MethodDeclaration declaration : lexer.getMethods()) {
@@ -119,9 +121,9 @@ public class MainActivity extends AppCompatActivity {
                             new NodeData(
                                     declaration.getNameAsString(),
                                     declaration.toString(),
-                                    NodeTypes.METHODS,
+                                    NodeTypes.METHOD,
                                     new MethodNode(this),
-                                    null)));
+                                    declaration)));
         }
 
         //LOAD TREE-MODEL IN ADAPTER
@@ -135,8 +137,10 @@ public class MainActivity extends AppCompatActivity {
             NodeModel<NodeData> release = (NodeModel<NodeData>) releaseNode;
             boolean b = true;
 
-            if (release.value.types == NodeTypes.METHODS && target.value.types == NodeTypes.VARIABLES) b = false;
-            else if (release.value.types == NodeTypes.VARIABLES && release.value.types == NodeTypes.METHODS) b = true;
+            if (release.value.types == NodeTypes.METHOD && target.value.types == NodeTypes.VARIABLE)
+                b = false;
+            else if (release.value.types == NodeTypes.VARIABLE && release.value.types == NodeTypes.METHOD)
+                b = true;
 
             return b;
         });
@@ -173,24 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 "import android.text.style.ForegroundColorSpan;\n" +
                 "import android.view.View;\n" +
                 "\n" +
-                "import androidx.appcompat.app.AppCompatActivity;\n" +
-                "\n" +
-                "import com.dark.androidbox.adapter.NodeViewAdapter;\n" +
-                "import com.dark.androidbox.codeView.Editor;\n" +
-                "import com.dark.androidbox.databinding.ActivityMainBinding;\n" +
-                "import com.dark.androidbox.model.NodeData;\n" +
-                "import com.dark.androidbox.types.NodeTypes;\n" +
-                "import com.gyso.treeview.GysoTreeView;\n" +
-                "import com.gyso.treeview.adapter.TreeViewAdapter;\n" +
-                "import com.gyso.treeview.layout.BoxDownTreeLayoutManager;\n" +
-                "import com.gyso.treeview.line.SmoothLine;\n" +
-                "import com.gyso.treeview.model.NodeModel;\n" +
-                "import com.gyso.treeview.model.TreeModel;\n" +
-                "\n" +
-                "import java.util.regex.Matcher;\n" +
-                "import java.util.regex.Pattern;\n" +
-                "\n" +
-                "public class MainActivity extends AppCompatActivity {\n" +
+                "public class MainActivity extends AppCompatActivity implements Node, Data, ClM {\n" +
                 "\n" +
                 "    private ActivityMainBinding binding;\n" +
                 "    private GysoTreeView treeView;\n" +

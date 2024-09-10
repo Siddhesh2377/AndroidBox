@@ -1,9 +1,13 @@
 package com.gyso.treeview;
 
+import static com.gyso.treeview.GysoTreeView.TAG;
+import static com.gyso.treeview.TreeViewContainer.DEFAULT_FOCUS_DURATION;
+
 import android.view.View;
 
 import com.gyso.treeview.adapter.TreeViewAdapter;
 import com.gyso.treeview.model.NodeModel;
+import com.gyso.treeview.util.TreeViewLog;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -26,27 +30,29 @@ import java.util.List;
 public class TreeViewEditor {
     private final WeakReference<TreeViewAdapter<?>> adapterWeakReference;
     private final WeakReference<TreeViewContainer> containerWeakReference;
-    protected TreeViewEditor(TreeViewContainer container){
+
+    protected TreeViewEditor(TreeViewContainer container) {
         this.containerWeakReference = new WeakReference<>(container);
         this.adapterWeakReference = new WeakReference<>(container.getAdapter());
     }
 
-    private TreeViewContainer getContainer(){
+    private TreeViewContainer getContainer() {
         return containerWeakReference.get();
     }
 
-    private TreeViewAdapter<?> getAdapter(){
+    private TreeViewAdapter<?> getAdapter() {
         return adapterWeakReference.get();
     }
+
     /**
      * let add node in window viewport
      */
-    public void focusMidLocation(){
+    public void focusMidLocation() {
         TreeViewContainer container = getContainer();
-        if (container!=null)container.focusMidLocation();
+        if (container != null) container.focusMidLocation();
     }
 
-    public View anchorNodeOnMidViewport(NodeModel<?> targetNode){
+    public View anchorNodeOnMidViewport(NodeModel<?> targetNode) {
         //TODO move targetNode at center  of viewport
         return null;
     }
@@ -54,7 +60,7 @@ public class TreeViewEditor {
     /**
      *  change layout algorithm
      */
-    public void changeLayoutAlgorithm(){
+    public void changeLayoutAlgorithm() {
 
     }
 
@@ -62,7 +68,7 @@ public class TreeViewEditor {
      *  get current relation ship, you can use when you change
      * @param traverse relations node
      */
-    public<T> void getCurrentRelationships(TraverseRelationshipCallback traverse){
+    public <T> void getCurrentRelationships(TraverseRelationshipCallback traverse) {
 
     }
 
@@ -71,11 +77,11 @@ public class TreeViewEditor {
      * @param traverse relations node
      * @param jsonStringFilePath jsonStringFilePath
      */
-    public boolean save(String jsonStringFilePath, TraverseRelationshipCallback traverse){
-            return false;
+    public boolean save(String jsonStringFilePath, TraverseRelationshipCallback traverse) {
+        return false;
     }
 
-    public boolean save(File jsonStringFile, TraverseRelationshipCallback traverse){
+    public boolean save(File jsonStringFile, TraverseRelationshipCallback traverse) {
         return false;
     }
 
@@ -83,7 +89,7 @@ public class TreeViewEditor {
      * load data  from json String
      * @param jsonString string
      */
-    public void load(String jsonString){
+    public void load(String jsonString) {
 
     }
 
@@ -91,7 +97,7 @@ public class TreeViewEditor {
      * load data  from file
      * @param jsonStringFile file
      */
-    public void load(File jsonStringFile){
+    public void load(File jsonStringFile) {
 
     }
 
@@ -99,7 +105,7 @@ public class TreeViewEditor {
      *  expand by node
      * @param targetParentNode targetParentNode
      */
-    public void collapse(NodeModel<?> targetParentNode){
+    public void collapse(NodeModel<?> targetParentNode) {
 
     }
 
@@ -107,51 +113,70 @@ public class TreeViewEditor {
      *  expand by node
      * @param targetParentNode targetParentNode
      */
-    public void expand(NodeModel<?> targetParentNode){
+    public void expand(NodeModel<?> targetParentNode) {
 
     }
 
     /**
-     *  focus on node
+     * Focus on node
      * @param targetNode targetNode
      */
-    public void focusOn(NodeModel<?> targetNode){
-
+    public void focusOn(NodeModel<?> targetNode) {
+//        // Check if the targetNode is not null
+//        if (targetNode == null) {
+//            TreeViewLog.e(TAG, "Target node is null");
+//            return;
+//        }
+//        TreeViewContainer container = getContainer();
+//        // Retrieve the position or other relevant data from targetNode
+//        float targetX = container.getTreeViewHolder(targetNode).getView().getX(); // Assuming NodeModel has getX() method
+//        float targetY = container.getTreeViewHolder(targetNode).getView().getY(); // Assuming NodeModel has getY() method
+//
+//        // Update or create the focus logic based on the targetNode's position
+//
+//        // Update the container's focus logic
+//        container.animate().scaleX(1.0f) // Adjust scale values as needed
+//                .translationX(targetX)
+//                .scaleY(1.0f) // Adjust scale values as needed
+//                .translationY(targetY)
+//                .setDuration(DEFAULT_FOCUS_DURATION)
+//                .start();
     }
+
 
     /**
      *  un focus on node
      * @param targetNode targetNode
      */
-    public void unFocusOn(NodeModel<?> targetNode){
+    public void unFocusOn(NodeModel<?> targetNode) {
 
     }
 
     /**
      *  for support scroll view
      */
-    public void  lockDragDirection(){
+    public void lockDragDirection() {
 
     }
 
     /**
      *  save  current state
      */
-    public void saveLastSate(){
+    public void saveLastSate() {
 
     }
 
     /**
-    *  keep last location and
+     *  keep last location and
      */
-    public void restoreLastSate(){
+    public void restoreLastSate() {
 
     }
 
     /**
      *  add on select listener
      */
-    public void addOnSelectedListener(){
+    public void addOnSelectedListener() {
 
     }
 
@@ -160,7 +185,7 @@ public class TreeViewEditor {
      *  totally free drag;
      * @param status status
      */
-    public void setEditStatus(int status){
+    public void setEditStatus(int status) {
 
     }
 
@@ -168,9 +193,9 @@ public class TreeViewEditor {
      * before you edit, requestMoveNodeByDragging(true), so than you can drag to move the node
      * @param wantEdit true for edit mode
      */
-    public void setWantEdit(boolean wantEdit){
+    public void setWantEdit(boolean wantEdit) {
         TreeViewContainer container = getContainer();
-        if (container!=null)container.requestMoveNodeByDragging(wantEdit);
+        if (container != null) container.requestMoveNodeByDragging(wantEdit);
     }
 
     /**
@@ -180,8 +205,8 @@ public class TreeViewEditor {
      */
     public void addChildNodes(NodeModel<?> parent, NodeModel<?>... childNodes) {
         TreeViewContainer container = getContainer();
-        if(container!=null){
-            container.onAddNodes(parent,childNodes);
+        if (container != null) {
+            container.onAddNodes(parent, childNodes);
         }
     }
 
@@ -189,9 +214,9 @@ public class TreeViewEditor {
      * remove node
      * @param nodeToRemove node to remove
      */
-    public void removeNode(NodeModel<?> nodeToRemove){
+    public void removeNode(NodeModel<?> nodeToRemove) {
         TreeViewContainer container = getContainer();
-        if(container!=null){
+        if (container != null) {
             container.onRemoveNode(nodeToRemove);
         }
     }
@@ -200,19 +225,22 @@ public class TreeViewEditor {
      * remove children nodes by parent node
      * @param parentNode parent node to remove children
      */
-    public void removeNodeChildren(NodeModel<?> parentNode){
+    public void removeNodeChildren(NodeModel<?> parentNode) {
         TreeViewContainer container = getContainer();
-        if(container!=null){
+        if (container != null) {
             container.onRemoveChildNodes(parentNode);
         }
     }
 
-    public interface  TraverseRelationshipCallback{
-       <T> void callback(T root, T parent , T child);
-       default  void callbackView(View rootView, View parentView , View childView){};
+    public interface TraverseRelationshipCallback {
+        <T> void callback(T root, T parent, T child);
+
+        default void callbackView(View rootView, View parentView, View childView) {
+        }
+
     }
 
-    public interface OnNodeSelectedCallback{
+    public interface OnNodeSelectedCallback {
         <T> void callback(T clickNode, List<T> selectedList);
     }
 }

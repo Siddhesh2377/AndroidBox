@@ -2,6 +2,7 @@ package com.dark.androidbox.model;
 
 import com.dark.androidbox.nodes.BaseNode;
 import com.dark.androidbox.types.NodeTypes;
+import com.github.javaparser.ast.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +15,10 @@ public class NodeData {
     public String code;
     public NodeTypes types;
     public BaseNode node;
-    public List<?> data;
+    public Node data;
 
 
-    public NodeData(String title, String code, NodeTypes types, BaseNode node, List<?> data) {
+    public NodeData(String title, String code, NodeTypes types, BaseNode node, Node data) {
         this.title = title;
         this.code = code;
         this.types = types;
