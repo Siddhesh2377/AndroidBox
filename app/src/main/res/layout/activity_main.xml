@@ -16,24 +16,33 @@
         android:id="@+id/code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn"
+        android:layout_below="@id/center"
         android:hint="Code here ..."
         android:background="@color/white"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn"
+        android:id="@+id/center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Run Java Code"/>
+        android:text="Focus Center"/>
 
     <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/drag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/Widget.Material3.CompoundButton.MaterialSwitch"
-        android:layout_centerHorizontal="true"
         android:text="Lock Drag"/>
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/choose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_alignParentEnd="true"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="24dp"
+        android:spinnerMode="dropdown" />
 
 
 

@@ -2,23 +2,27 @@ package com.dark.androidbox.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.dark.androidbox.databinding.MethodsListBinding;
+import com.dark.androidbox.model.NodeData;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.gyso.treeview.model.NodeModel;
 
 import java.util.List;
 
-public class MethodSelectAdapter extends BaseAdapter {
+public class NodeSelector extends BaseAdapter {
 
-    private List<MethodDeclaration> data;
+    private List<NodeModel<NodeData>> data;
     private Context context;
     private LayoutInflater inflater;
 
-    public MethodSelectAdapter(Context context, List<MethodDeclaration> data) {
+    public NodeSelector(Context context, List<NodeModel<NodeData>> data) {
         this.context = context;
         this.data = data;
         this.inflater = LayoutInflater.from(context);
@@ -52,8 +56,9 @@ public class MethodSelectAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        MethodDeclaration method = data.get(i);
-        holder.binding.title.setText(method.getNameAsString());
+        if (data.get(i).value.title.equals("Var")) holder.binding.title.setTextColor(Color.parseColor("#ee596e"));
+        if (data.get(i).value.title.equals("Methods")) holder.binding.title.setTextColor(Color.parseColor("#E49D33"));
+        holder.binding.title.setText(data.get(i).value.title);
 
         return convertView;
     }

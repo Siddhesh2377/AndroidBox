@@ -40,7 +40,7 @@ import com.gyso.treeview.util.TreeViewLog;
 public class GysoTreeView extends FrameLayout {
     public static final String TAG = GysoTreeView.class.getSimpleName();
     public final TreeViewContainer treeViewContainer;
-    private final TouchEventHandler treeViewGestureHandler;
+    public final TouchEventHandler treeViewGestureHandler;
     private boolean disallowIntercept = false;
 
     public GysoTreeView(@NonNull Context context) {

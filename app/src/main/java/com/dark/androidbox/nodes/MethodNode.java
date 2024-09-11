@@ -6,20 +6,10 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatSpinner;
 
-import com.dark.androidbox.MainActivity;
-import com.dark.androidbox.adapter.MethodSelectAdapter;
 import com.dark.androidbox.databinding.MethodNodeBinding;
-import com.github.javaparser.ast.body.MethodDeclaration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MethodNode  extends BaseNode {
 

@@ -3,7 +3,11 @@ package com.gyso.treeview;
 import static com.gyso.treeview.GysoTreeView.TAG;
 import static com.gyso.treeview.TreeViewContainer.DEFAULT_FOCUS_DURATION;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.gyso.treeview.adapter.TreeViewAdapter;
 import com.gyso.treeview.model.NodeModel;
@@ -122,25 +126,37 @@ public class TreeViewEditor {
      * @param targetNode targetNode
      */
     public void focusOn(NodeModel<?> targetNode) {
-//        // Check if the targetNode is not null
-//        if (targetNode == null) {
-//            TreeViewLog.e(TAG, "Target node is null");
-//            return;
-//        }
-//        TreeViewContainer container = getContainer();
-//        // Retrieve the position or other relevant data from targetNode
-//        float targetX = container.getTreeViewHolder(targetNode).getView().getX(); // Assuming NodeModel has getX() method
-//        float targetY = container.getTreeViewHolder(targetNode).getView().getY(); // Assuming NodeModel has getY() method
-//
-//        // Update or create the focus logic based on the targetNode's position
-//
-//        // Update the container's focus logic
-//        container.animate().scaleX(1.0f) // Adjust scale values as needed
-//                .translationX(targetX)
-//                .scaleY(1.0f) // Adjust scale values as needed
-//                .translationY(targetY)
-//                .setDuration(DEFAULT_FOCUS_DURATION)
-//                .start();
+        if (targetNode == null) {
+            TreeViewLog.e(TAG, "Target node is null");
+            return;
+        }
+
+        TreeViewContainer container = getContainer();
+        View targetView = container.getTreeViewHolder(targetNode).getView();
+
+        float targetX = targetView.getX();
+        float targetY = targetView.getY();
+
+        Log.d("AXISes", "X: " + targetNode.x + " Y: " + targetNode.y);
+
+
+
+
+        container.animate().scaleX(1f)
+                .translationX(-targetNode.x)
+                .scaleY(1f)
+                .translationY(-(targetNode.y - (float) getScreenHeight(targetView.getContext()) / 2))
+                .setDuration(DEFAULT_FOCUS_DURATION)
+                .start();
+    }
+
+    public int getScreenHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+
+        // Return screen height in pixels
+        return displayMetrics.heightPixels;
     }
 
 

@@ -67,12 +67,23 @@ public class NodeModel<T> implements Serializable {
      */
     public int leafCount =0;
 
+    public float x, y;
+
     /**
      * leaves list for node
      */
     public final LinkedList<NodeModel<T>>  leavesList = new LinkedList<>();
 
     public boolean hidden = false;
+
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
 
     public NodeModel(T value) {
         this.value = value;

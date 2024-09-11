@@ -12,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
@@ -68,7 +69,7 @@ public class TreeViewContainer extends ViewGroup implements TreeViewNotifier {
     private float minScale = 0.2f;
     private Map<NodeModel<?>, TreeViewHolder<?>> nodeViewMap = null;
     private Paint mPaint;
-    private Matrix centerMatrix;
+    public Matrix centerMatrix;
     private TreeViewAdapter<?> adapter;
     private boolean isDraggingNodeMode;
     private LayoutTransition mLayoutTransition;
@@ -278,8 +279,8 @@ public class TreeViewContainer extends ViewGroup implements TreeViewNotifier {
         centerMatrix.set(getMatrix());
         float[] values = new float[9];
         centerMatrix.getValues(values);
-        values[Matrix.MTRANS_X] = 0f;
-        values[Matrix.MTRANS_Y] = 0f;
+//        values[Matrix.MTRANS_X] = 0f;
+//        values[Matrix.MTRANS_Y] = 0f;
         centerMatrix.setValues(values);
         setTouchDelegate();
     }
@@ -315,10 +316,13 @@ public class TreeViewContainer extends ViewGroup implements TreeViewNotifier {
         }
         centerMatrix.getValues(centerM);
         float[] now = new float[9];
+
         getMatrix().getValues(now);
-        TreeViewLog.e(TAG, "focusMidLocation: \n"
+        Log.d("FC", "focusMidLocation: \n"
                 + Arrays.toString(centerM) + "\n"
                 + Arrays.toString(now));
+
+
         if (now[Matrix.MSCALE_X] > 0 && now[Matrix.MSCALE_Y] > 0) {
             animate().scaleX(centerM[Matrix.MSCALE_X])
                     .translationX(centerM[Matrix.MTRANS_X])
@@ -379,6 +383,9 @@ public class TreeViewContainer extends ViewGroup implements TreeViewNotifier {
     private void drawTreeLine(NodeModel<?> parent) {
         LinkedList<? extends NodeModel<?>> childNodes = parent.getChildNodes();
         for (NodeModel<?> node : childNodes) {
+
+            setNodePos(node, this);
+
             TreeViewHolder<?> parentHolder = getTreeViewHolder(parent);
             if (parentHolder.getHolderLayoutType() == TreeLayoutManager.LAYOUT_TYPE_NONE) {
                 parentHolder.setHolderLayoutType(mTreeLayoutManager.getTreeLayoutType());
@@ -418,6 +425,20 @@ public class TreeViewContainer extends ViewGroup implements TreeViewNotifier {
             }
             drawTreeLine(node);
         }
+    }
+
+    private void setNodePos(NodeModel<?> node, TreeViewContainer treeViewContainer) {
+        TreeViewHolder<?> nodeHolder = treeViewContainer.getTreeViewHolder(node);
+        View nodeView = nodeHolder == null ? null : nodeHolder.getView();
+
+        if (nodeView == null) {
+            throw new NullPointerException(" nodeView can not be null");
+        }
+
+        Log.d("X Y POS", "setNodePos: " + nodeView.getX() + " " + nodeView.getY());
+
+        node.setX(nodeView.getX());
+        node.setY(nodeView.getY());
     }
 
     public TreeModel<?> getTreeModel() {
