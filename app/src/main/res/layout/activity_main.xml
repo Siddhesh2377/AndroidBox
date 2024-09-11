@@ -4,6 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     tools:context=".MainActivity">
 
     <include
@@ -38,9 +39,9 @@
         android:id="@+id/choose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:layout_alignParentEnd="true"
-        android:paddingVertical="8dp"
+        android:background="@drawable/bg_node_view"
+        android:paddingVertical="4dp"
         android:paddingHorizontal="24dp"
         android:spinnerMode="dropdown" />
 

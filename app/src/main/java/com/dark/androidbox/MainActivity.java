@@ -2,6 +2,7 @@ package com.dark.androidbox;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -59,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
         binding.drag.setOnCheckedChangeListener((compoundButton, isChecked) -> treeView.getEditor().setWantEdit(isChecked));
 
         binding.center.setOnClickListener(view -> treeView.getEditor().focusMidLocation());
+
+        //new Handler(getMainLooper()).postDelayed(() -> treeView.getEditor().focusOn(root), 1500);
+
     }
 
     private void highlightCode() {
@@ -128,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<NodeModel<NodeData>> getMaxNodes(NodeModel<NodeData> node) {
         ArrayList<NodeModel<NodeData>> nodeModels = new ArrayList<>();
+
+        nodeModels.add(root);
+
         if (!node.getChildNodes().isEmpty()) {
             for (NodeModel<NodeData> dataNodeModel : node.getChildNodes()) {
                 nodeModels.add(dataNodeModel);
