@@ -50,30 +50,39 @@ public class TouchEventHandler {
     private boolean isKeepInViewport;
     private TreeViewControlListener controlListener = null;
     private int scalePercentOnlyForControlListener = 0;
+    private onDoubleTapListener event;
 
     public TouchEventHandler(Context context, View view) {
         this.mView = view;
         flingAnimateListener = (animation, value, velocity) -> keepWithinBoundaries();
-        mGestureDetector = new GestureDetector(context,
-                new GestureDetector.SimpleOnGestureListener() {
-                    @Override
-                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                        flingX = new FlingAnimation(mView, DynamicAnimation.TRANSLATION_X);
-                        flingX.setStartVelocity(velocityX)
-                                .addUpdateListener(flingAnimateListener)
-                                .start();
+        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                flingX = new FlingAnimation(mView, DynamicAnimation.TRANSLATION_X);
+                flingX.setStartVelocity(velocityX)
+                        .addUpdateListener(flingAnimateListener)
+                        .start();
 
-                        flingY = new FlingAnimation(mView, DynamicAnimation.TRANSLATION_Y);
-                        flingY.setStartVelocity(velocityY)
-                                .addUpdateListener(flingAnimateListener)
-                                .start();
-                        return false;
-                    }
-                });
+                flingY = new FlingAnimation(mView, DynamicAnimation.TRANSLATION_Y);
+                flingY.setStartVelocity(velocityY)
+                        .addUpdateListener(flingAnimateListener)
+                        .start();
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                // Execute your method here
+                event.onDoubleTapListener();
+                return true;
+            }
+        });
+
         ViewConfiguration vc = ViewConfiguration.get(view.getContext());
         mTouchSlop = vc.getScaledTouchSlop() * 0.8f;
 
     }
+
 
     /**
      * set window height and width
@@ -104,6 +113,10 @@ public class TouchEventHandler {
             mIsMoving = true;
         }
         return mIsMoving;
+    }
+
+    public void setOnDoubleTapListener(onDoubleTapListener event) {
+        this.event = event;
     }
 
     /**
@@ -324,4 +337,7 @@ public class TouchEventHandler {
     public void setControlListener(TreeViewControlListener controlListener) {
         this.controlListener = controlListener;
     }
+
+
 }
+

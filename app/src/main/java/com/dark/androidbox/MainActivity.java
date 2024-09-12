@@ -26,6 +26,7 @@ import com.gyso.treeview.layout.BoxHorizonLeftAndRightLayoutManager;
 import com.gyso.treeview.line.SmoothLine;
 import com.gyso.treeview.model.NodeModel;
 import com.gyso.treeview.model.TreeModel;
+import com.gyso.treeview.touch.onDoubleTapListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new NodeViewAdapter();
 
         init();
-        binding.code.setText(codeStr());
         highlightCode();
+        if (binding.code.getText().toString().isEmpty()) binding.code.setText(codeStr());
 
         binding.drag.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) CodeToNode(binding.code.getText().toString());
@@ -64,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
         binding.center.setOnClickListener(view -> treeView.getEditor().focusMidLocation());
 
-        //new Handler(getMainLooper()).postDelayed(() -> treeView.getEditor().focusOn(root), 1500);
+        treeView.treeViewGestureHandler.setOnDoubleTapListener(() -> treeView.getEditor().focusMidLocation());
+
+
 
     }
 
@@ -96,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             for (MethodDeclaration declaration : lexer.getMethods()) {
-                treeModel.addNode(methods, createNode(new NodeData(declaration.getNameAsString(), declaration.toString(), NodeTypes.METHOD, new MethodNode(this), declaration)));
+                treeModel.addNode(methods, createNode(new NodeData(declaration.getNameAsString(), declaration.toString(), NodeTypes.METHOD, new ClassNode(this), declaration)));
             }
 
             adapter.setTreeModel(treeModel);
@@ -217,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI() {
         binding.code.setVisibility(View.GONE);
     }
+
 
     private StringBuilder codeStr() {
         return new StringBuilder("package com.dark.androidbox;\n" + "\n" + "import android.graphics.Color;\n" + "import android.os.Bundle;\n" + "import android.os.Handler;\n" + "import android.text.Editable;\n" + "import android.text.Spannable;\n" + "import android.text.TextWatcher;\n" + "import android.text.style.ForegroundColorSpan;\n" + "import android.view.View;\n" + "\n" + "public class MainActivity extends AppCompatActivity implements Node, Data, ClM {\n" + "\n" + "    private ActivityMainBinding binding;\n" + "    private GysoTreeView treeView;\n" + "    private TreeViewAdapter<NodeData> adapter;\n" + "\n" + "    @Override\n" + "    protected void onCreate(Bundle savedInstanceState) {\n" + "        super.onCreate(savedInstanceState);\n" + "        binding = ActivityMainBinding.inflate(getLayoutInflater());\n" + "        setContentView(binding.getRoot());\n" + "\n" + "        Editor editor = new Editor(binding.code);\n" + "        \n" + "        binding.code.setText();\n" + "\n" + "        treeView = binding.nodeView.treeview;\n" + "\n" + "        binding.btn.setOnClickListener(view -> {\n" + "            String codeText = binding.code.getText().toString();\n" + "            if (!codeText.isEmpty()) {\n" + "                loadJava(new StringBuilder(codeText));\n" + "            }\n" + "        });\n" + "    }\n" + "\n" + "    private void loadJava(StringBuilder code) {\n" + "        Lexer lexer = new Lexer(code);\n" + "        adapter = new NodeViewAdapter();\n" + "        initializeTreeView();\n" + "\n" + "        NodeModel<NodeData> node0 = createNode(lexer.getClasses().get(0), NodeTypes.CLASSES);\n" + "        TreeModel<NodeData> treeModel = new TreeModel<>(node0);\n" + "\n" + "        treeModel.addNode(\n" + "                createNode(lexer.getMethods().get(0), NodeTypes.METHODS),\n" + "                createNode(lexer.getFields().get(0).getVariables().get(0), NodeTypes.VARIABLES)\n" + "        );\n" + "\n" + "        adapter.setTreeModel(treeModel);\n" + "        updateUI();\n" + "    }\n" + "\n" + "    private void initializeTreeView() {\n" + "        treeView.setAdapter(adapter);\n" + "        treeView.setTreeLayoutManager(new BoxDownTreeLayoutManager(this, 20, 20, new SmoothLine()));\n" + "    }\n" + "\n" + "    private NodeModel<NodeData> createNode(NodeData data, NodeTypes type) {\n" + "        return new NodeModel<>(new NodeData(data.getName(), data.getDescription(), type, data.getNode(), data.getNode()));\n" + "    }\n" + "\n" + "    private void updateUI() {\n" + "        binding.code.setVisibility(View.GONE);\n" + "        treeView.setTreeViewControlListener(new TreeViewControlListener() {\n" + "            @Override\n" + "            public void onScaling(int state, int percent) {\n" + "                // Handle scaling\n" + "            }\n" + "\n" + "            @Override\n" + "            public void onDragMoveNodesHit(@Nullable NodeModel<?> draggingNode, @Nullable NodeModel<?> hittingNode, @Nullable View draggingView, @Nullable View hittingView) {\n" + "                // Handle drag move nodes hit\n" + "            }\n" + "        });\n" + "    }\n" + "}\n");
