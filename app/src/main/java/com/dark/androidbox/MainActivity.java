@@ -1,9 +1,12 @@
 package com.dark.androidbox;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +29,9 @@ import com.gyso.treeview.layout.BoxHorizonLeftAndRightLayoutManager;
 import com.gyso.treeview.line.SmoothLine;
 import com.gyso.treeview.model.NodeModel;
 import com.gyso.treeview.model.TreeModel;
-import com.gyso.treeview.touch.onDoubleTapListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,7 @@ import java.util.List;
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
 
+    private static final Logger log = LoggerFactory.getLogger(MainActivity.class);
     private GysoTreeView treeView;
     private TreeViewAdapter<NodeData> adapter;
     private Editor editor;
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private NodeModel<NodeData> root, methods, var;
     private ActivityMainBinding binding;
     private TreeModel<NodeData> treeModel;
+    private boolean isFirstCode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         init();
         highlightCode();
-        if (binding.code.getText().toString().isEmpty()) binding.code.setText(codeStr());
+        if (isFirstCode) binding.code.setText(codeStr());
 
         binding.drag.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) CodeToNode(binding.code.getText().toString());
@@ -67,18 +74,23 @@ public class MainActivity extends AppCompatActivity {
 
         treeView.treeViewGestureHandler.setOnDoubleTapListener(() -> treeView.getEditor().focusMidLocation());
 
-
+        //treeView.getEditor().setWantEdit(true);
+        new Handler(getMainLooper()).postDelayed(() -> treeView.getEditor().focusMidLocation(), 2000);
 
     }
 
     private String nodeToCode() {
+        isFirstCode = false;
         binding.drag.setText("Code To Node");
         binding.code.setVisibility(View.VISIBLE);
         treeView.setVisibility(View.INVISIBLE);
+
         return lexer.unit.toString();
     }
 
     private void CodeToNode(String code) {
+        hideKeyboard();
+        isFirstCode = false;
         binding.drag.setText("Node To Code");
         treeView.setVisibility(View.VISIBLE);
 
@@ -119,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadDefaultNodes() {
+        lexer = new Lexer(new StringBuilder());
         lexer.addClass("Main", null, null);
         root = createNode(new NodeData(lexer.getClasses().get(0).getNameAsString(), lexer.getClasses().get(0).toString(), NodeTypes.CLASS, new ClassNode(this), lexer.getClasses().get(0)));
         var = createNode(new NodeData("Var", "", NodeTypes.VARIABLE, new ClassNode(this), null));
@@ -225,4 +238,10 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder codeStr() {
         return new StringBuilder("package com.dark.androidbox;\n" + "\n" + "import android.graphics.Color;\n" + "import android.os.Bundle;\n" + "import android.os.Handler;\n" + "import android.text.Editable;\n" + "import android.text.Spannable;\n" + "import android.text.TextWatcher;\n" + "import android.text.style.ForegroundColorSpan;\n" + "import android.view.View;\n" + "\n" + "public class MainActivity extends AppCompatActivity implements Node, Data, ClM {\n" + "\n" + "    private ActivityMainBinding binding;\n" + "    private GysoTreeView treeView;\n" + "    private TreeViewAdapter<NodeData> adapter;\n" + "\n" + "    @Override\n" + "    protected void onCreate(Bundle savedInstanceState) {\n" + "        super.onCreate(savedInstanceState);\n" + "        binding = ActivityMainBinding.inflate(getLayoutInflater());\n" + "        setContentView(binding.getRoot());\n" + "\n" + "        Editor editor = new Editor(binding.code);\n" + "        \n" + "        binding.code.setText();\n" + "\n" + "        treeView = binding.nodeView.treeview;\n" + "\n" + "        binding.btn.setOnClickListener(view -> {\n" + "            String codeText = binding.code.getText().toString();\n" + "            if (!codeText.isEmpty()) {\n" + "                loadJava(new StringBuilder(codeText));\n" + "            }\n" + "        });\n" + "    }\n" + "\n" + "    private void loadJava(StringBuilder code) {\n" + "        Lexer lexer = new Lexer(code);\n" + "        adapter = new NodeViewAdapter();\n" + "        initializeTreeView();\n" + "\n" + "        NodeModel<NodeData> node0 = createNode(lexer.getClasses().get(0), NodeTypes.CLASSES);\n" + "        TreeModel<NodeData> treeModel = new TreeModel<>(node0);\n" + "\n" + "        treeModel.addNode(\n" + "                createNode(lexer.getMethods().get(0), NodeTypes.METHODS),\n" + "                createNode(lexer.getFields().get(0).getVariables().get(0), NodeTypes.VARIABLES)\n" + "        );\n" + "\n" + "        adapter.setTreeModel(treeModel);\n" + "        updateUI();\n" + "    }\n" + "\n" + "    private void initializeTreeView() {\n" + "        treeView.setAdapter(adapter);\n" + "        treeView.setTreeLayoutManager(new BoxDownTreeLayoutManager(this, 20, 20, new SmoothLine()));\n" + "    }\n" + "\n" + "    private NodeModel<NodeData> createNode(NodeData data, NodeTypes type) {\n" + "        return new NodeModel<>(new NodeData(data.getName(), data.getDescription(), type, data.getNode(), data.getNode()));\n" + "    }\n" + "\n" + "    private void updateUI() {\n" + "        binding.code.setVisibility(View.GONE);\n" + "        treeView.setTreeViewControlListener(new TreeViewControlListener() {\n" + "            @Override\n" + "            public void onScaling(int state, int percent) {\n" + "                // Handle scaling\n" + "            }\n" + "\n" + "            @Override\n" + "            public void onDragMoveNodesHit(@Nullable NodeModel<?> draggingNode, @Nullable NodeModel<?> hittingNode, @Nullable View draggingView, @Nullable View hittingView) {\n" + "                // Handle drag move nodes hit\n" + "            }\n" + "        });\n" + "    }\n" + "}\n");
     }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(binding.getRoot().getWindowToken(), 0);
+    }
 }
+
