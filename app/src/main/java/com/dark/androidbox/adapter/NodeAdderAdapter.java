@@ -17,13 +17,13 @@ import com.gyso.treeview.model.NodeModel;
 
 import java.util.List;
 
-public class NodeSelector extends BaseAdapter {
+public class NodeAdderAdapter extends BaseAdapter {
 
     private List<NodeModel<NodeData>> data;
     private Context context;
     private LayoutInflater inflater;
 
-    public NodeSelector(Context context, List<NodeModel<NodeData>> data) {
+    public NodeAdderAdapter(Context context, List<NodeModel<NodeData>> data) {
         this.context = context;
         this.data = data;
         this.inflater = LayoutInflater.from(context);

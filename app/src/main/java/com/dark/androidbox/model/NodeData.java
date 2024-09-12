@@ -16,6 +16,7 @@ public class NodeData {
     public NodeTypes types;
     public BaseNode node;
     public Node data;
+    public int nodeId;
 
 
     public NodeData(String title, String code, NodeTypes types, BaseNode node, Node data) {
