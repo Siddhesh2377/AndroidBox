@@ -49,7 +49,7 @@ public class ClassNode extends BaseNode {
         if (data.value.data instanceof ClassOrInterfaceDeclaration) {
             declaration = (ClassOrInterfaceDeclaration) data.value.data;
             binding.ctx.setText(buildSpannableText());
-        }else {
+        } else {
             binding.ctx.setText(data.value.title);
         }
     }

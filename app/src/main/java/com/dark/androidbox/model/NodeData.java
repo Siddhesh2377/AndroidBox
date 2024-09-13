@@ -4,10 +4,6 @@ import com.dark.androidbox.nodes.BaseNode;
 import com.dark.androidbox.types.NodeTypes;
 import com.github.javaparser.ast.Node;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 public class NodeData {
 
 

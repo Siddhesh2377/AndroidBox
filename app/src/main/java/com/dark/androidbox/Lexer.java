@@ -2,26 +2,25 @@ package com.dark.androidbox;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.Modifier;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class Lexer {
 
     public CompilationUnit unit;
     public JavaParser parser;
+
     public Lexer(StringBuilder code) {
         parser = new JavaParser();
         unit = parser.parse(new StringReader(code.toString())).getResult().orElse(null);
@@ -59,7 +58,6 @@ public class Lexer {
             }
         }
     }
-
 
 
     // Add a field to a specific class

@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.dark.androidbox.databinding.MethodNodeBinding;
 
-public class MethodNode  extends BaseNode {
+public class MethodNode extends BaseNode {
 
     private MethodNodeBinding binding;
 
