@@ -121,10 +121,6 @@ public class TreeViewEditor {
 
     }
 
-    /**
-     * Focus on node
-     * @param targetNode targetNode
-     */
     public void focusOn(NodeModel<?> targetNode) {
         if (targetNode == null) {
             TreeViewLog.e(TAG, "Target node is null");
@@ -132,23 +128,42 @@ public class TreeViewEditor {
         }
 
         TreeViewContainer container = getContainer();
+        if (container == null) {
+            TreeViewLog.e(TAG, "Container is null");
+            return;
+        }
+
         View targetView = container.getTreeViewHolder(targetNode).getView();
+        if (targetView == null) {
+            TreeViewLog.e(TAG, "Target view is null");
+            return;
+        }
 
-        float targetX = targetView.getX();
-        float targetY = targetView.getY();
+        // Get the target node's position (center it by adding half of the width and height)
+        float targetX = targetView.getX() + (targetView.getWidth() / 2);
+        float targetY = targetView.getY() + (targetView.getHeight() / 2);
 
-        Log.d("AXISes", "X: " + targetNode.x + " Y: " + targetNode.y);
+        // Get the screen dimensions (center of the screen)
+        int screenWidth = getScreenWidth(targetView.getContext());
+        int screenHeight = getScreenHeight(targetView.getContext());
 
+        // Calculate the offset required to move the target node to the center of the screen
+        float offsetX = screenWidth / 2f - targetX;
+        float offsetY = screenHeight / 2f - targetY;
 
+        Log.d("AXISes", "Target Node X: " + targetX + " Y: " + targetY);
+        Log.d("Screen", "Screen Width: " + screenWidth + " Screen Height: " + screenHeight);
 
-
-        container.animate().scaleX(1f)
-                .translationX(-targetNode.x)
+        // Apply the translation to move the target node to the center of the screen
+        container.animate()
+                .scaleX(1f)
+                .translationX(offsetX)
                 .scaleY(1f)
-                .translationY(-(targetNode.y - (float) getScreenHeight(targetView.getContext()) / 2))
+                .translationY(offsetY)
                 .setDuration(DEFAULT_FOCUS_DURATION)
                 .start();
     }
+
 
     public int getScreenHeight(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -157,6 +172,15 @@ public class TreeViewEditor {
 
         // Return screen height in pixels
         return displayMetrics.heightPixels;
+    }
+
+    public int getScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+
+        // Return screen height in pixels
+        return displayMetrics.widthPixels;
     }
 
 

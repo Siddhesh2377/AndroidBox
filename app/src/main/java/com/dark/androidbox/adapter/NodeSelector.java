@@ -17,9 +17,9 @@ import java.util.List;
 
 public class NodeSelector extends BaseAdapter {
 
-    private List<NodeModel<NodeData>> data;
-    private Context context;
-    private LayoutInflater inflater;
+    private final List<NodeModel<NodeData>> data;
+    private final Context context;
+    private final LayoutInflater inflater;
 
     public NodeSelector(Context context, List<NodeModel<NodeData>> data) {
         this.context = context;
@@ -57,10 +57,10 @@ public class NodeSelector extends BaseAdapter {
         convertView.setBackgroundResource(R.drawable.bg_node_list_view);
         if (data.get(i).value.title.equals("Var"))
             holder.binding.title.setTextColor(Color.parseColor("#ee596e"));
-        if (data.get(i).value.title.equals("Methods"))
+        else if (data.get(i).value.title.equals("Methods"))
             holder.binding.title.setTextColor(Color.parseColor("#E49D33"));
+        else holder.binding.title.setTextColor(Color.DKGRAY);
         holder.binding.title.setText(data.get(i).value.title);
-
         return convertView;
     }
 

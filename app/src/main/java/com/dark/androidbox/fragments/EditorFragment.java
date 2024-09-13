@@ -1,5 +1,6 @@
 package com.dark.androidbox.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
 
 import com.dark.androidbox.Lexer;
-import com.dark.androidbox.adapter.NodeAdderAdapter;
 import com.dark.androidbox.adapter.NodeSelector;
 import com.dark.androidbox.adapter.NodeViewAdapter;
 import com.dark.androidbox.codeView.Editor;
@@ -35,12 +35,11 @@ import com.gyso.treeview.model.NodeModel;
 import com.gyso.treeview.model.TreeModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
+@SuppressLint("SetTextI18n")
 public class EditorFragment extends Fragment {
 
-
-    Context ctx;
+    private Context ctx;
     private FragmentEditorBinding binding;
     private GysoTreeView treeView;
     private TreeViewAdapter<NodeData> adapter;
@@ -48,12 +47,16 @@ public class EditorFragment extends Fragment {
     private Lexer lexer;
     private NodeModel<NodeData> root, methods, var;
     private TreeModel<NodeData> treeModel;
-    private boolean isFirstCode = true;
+    private final boolean isFirstCode = true;
+
+    public EditorFragment(){
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentEditorBinding.inflate(getLayoutInflater());
+        binding = FragmentEditorBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -64,24 +67,42 @@ public class EditorFragment extends Fragment {
         init();
     }
 
-
     private void init() {
+        setupViews();
+        setupListeners();
+        treeViewInit();
+        centerTreeViewAfterDelay();
+        highlightCode();
+    }
+
+    private void setupViews() {
         treeView = binding.nodeView.treeview;
         editor = new Editor(binding.code);
         lexer = new Lexer(new StringBuilder());
         adapter = new NodeViewAdapter();
-        treeViewInit();
+    }
 
-        binding.drag.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) CodeToNode(binding.code.getText().toString());
-            else binding.code.setText(nodeToCode());
+    private void highlightCode() {
+        for (FieldDeclaration declaration : lexer.getFields()) {
+            String type = declaration.getVariables().get(0).getTypeAsString();
+            String name = declaration.getVariables().get(0).getNameAsString();
+            editor.setTxtColor(type, Color.parseColor("#e4c17b"));
+            editor.setTxtColor(name, Color.parseColor("#ee596e"));
+        }
+    }
+
+    private void setupListeners() {
+        binding.drag.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                CodeToNode(binding.code.getText().toString());
+            } else {
+                binding.code.setText(nodeToCode());
+            }
         });
 
         binding.center.setOnClickListener(view -> treeView.getEditor().focusMidLocation());
 
-        treeView.treeViewGestureHandler.setOnDoubleTapListener(() -> treeView.getEditor().focusMidLocation());
-
-        new Handler(ctx.getMainLooper()).postDelayed(() -> treeView.getEditor().focusMidLocation(), 2000);
+        treeView.treeViewGestureHandler.setOnDoubleTapListener(treeView.getEditor()::focusMidLocation);
     }
 
     private void treeViewInit() {
@@ -91,59 +112,28 @@ public class EditorFragment extends Fragment {
             NodeModel<NodeData> target = (NodeModel<NodeData>) targetNode;
             NodeModel<NodeData> release = (NodeModel<NodeData>) releaseNode;
 
-            return !(release.value.types == NodeTypes.METHOD && target.value.types == NodeTypes.VARIABLE) && !(release.value.types == NodeTypes.VARIABLE && release.value.types == NodeTypes.METHOD);
+            return !(release.value.types == NodeTypes.METHOD && target.value.types == NodeTypes.VARIABLE) &&
+                    !(release.value.types == NodeTypes.VARIABLE && target.value.types == NodeTypes.METHOD);
         });
     }
 
-    private void codeViewInit() {
-        for (FieldDeclaration declaration : lexer.getFields()) {
-            String type = declaration.getVariables().get(0).getTypeAsString();
-            String name = declaration.getVariables().get(0).getNameAsString();
-            editor.setTxtColor(type, Color.parseColor("#e4c17b"));
-            editor.setTxtColor(name, Color.parseColor("#ee596e"));
-        }
+    private void centerTreeViewAfterDelay() {
+        new Handler(ctx.getMainLooper()).postDelayed(treeView.getEditor()::focusMidLocation, 2000);
     }
 
     private String nodeToCode() {
-        isFirstCode = false;
-        binding.drag.setText("Code To Node");
-        binding.code.setVisibility(View.VISIBLE);
-        treeView.setVisibility(View.INVISIBLE);
-
+        switchToCodeView();
         return lexer.unit.toString();
     }
 
     private void CodeToNode(String code) {
         hideKeyboard();
-        isFirstCode = false;
-        binding.drag.setText("Node To Code");
-        treeView.setVisibility(View.VISIBLE);
-
         if (code.isEmpty()) {
             loadDefaultNodes();
         } else {
-            lexer = new Lexer(new StringBuilder(code));
-            root = createNode(new NodeData(lexer.getClasses().get(0).getNameAsString(), lexer.getClasses().get(0).toString(), NodeTypes.CLASS, new ClassNode(ctx), lexer.getClasses().get(0)));
-
-            var = createNode(new NodeData("Var", "", NodeTypes.VARIABLE, new ClassNode(ctx), null));
-            methods = createNode(new NodeData("Methods", "", NodeTypes.METHOD, new ClassNode(ctx), null));
-
-            TreeModel<NodeData> treeModel = new TreeModel<>(root);
-            treeModel.addNode(root, var, methods);
-
-            for (FieldDeclaration declaration : lexer.getFields()) {
-                treeModel.addNode(var, createNode(new NodeData(declaration.getVariables().get(0).getNameAsString(), declaration.getVariables().get(0).getTypeAsString(), NodeTypes.VARIABLE, new ClassNode(ctx), declaration)));
-            }
-
-            for (MethodDeclaration declaration : lexer.getMethods()) {
-                treeModel.addNode(methods, createNode(new NodeData(declaration.getNameAsString(), declaration.toString(), NodeTypes.METHOD, new ClassNode(ctx), declaration)));
-            }
-
-            adapter.setTreeModel(treeModel);
-            setUpNodeSelector(binding.choose);
+            parseCodeToNodes(code);
         }
-        updateUI();
-
+        switchToNodeView();
     }
 
     private void loadDefaultNodes() {
@@ -156,6 +146,37 @@ public class EditorFragment extends Fragment {
         treeModel = new TreeModel<>(root);
         treeModel.addNode(root, var, methods);
         adapter.setTreeModel(treeModel);
+    }
+
+    private void parseCodeToNodes(String code) {
+        lexer = new Lexer(new StringBuilder(code));
+        root = createNode(new NodeData(lexer.getClasses().get(0).getNameAsString(), lexer.getClasses().get(0).toString(), NodeTypes.CLASS, new ClassNode(ctx), lexer.getClasses().get(0)));
+        var = createNode(new NodeData("Var", "", NodeTypes.VARIABLE, new ClassNode(ctx), null));
+        methods = createNode(new NodeData("Methods", "", NodeTypes.METHOD, new ClassNode(ctx), null));
+
+        treeModel = new TreeModel<>(root);
+        treeModel.addNode(root, var, methods);
+
+        for (FieldDeclaration declaration : lexer.getFields()) {
+            treeModel.addNode(var, createNodeFromField(declaration));
+        }
+
+        for (MethodDeclaration declaration : lexer.getMethods()) {
+            treeModel.addNode(methods, createNodeFromMethod(declaration));
+        }
+
+        adapter.setTreeModel(treeModel);
+        setUpNodeSelector(binding.choose);
+    }
+
+    private NodeModel<NodeData> createNodeFromField(FieldDeclaration declaration) {
+        String name = declaration.getVariables().get(0).getNameAsString();
+        String type = declaration.getVariables().get(0).getTypeAsString();
+        return createNode(new NodeData(name, type, NodeTypes.VARIABLE, new ClassNode(ctx), declaration));
+    }
+
+    private NodeModel<NodeData> createNodeFromMethod(MethodDeclaration declaration) {
+        return createNode(new NodeData(declaration.getNameAsString(), declaration.toString(), NodeTypes.METHOD, new MethodNode(ctx), declaration));
     }
 
     private void setUpNodeSelector(AppCompatSpinner spinner) {
@@ -175,50 +196,6 @@ public class EditorFragment extends Fragment {
         });
     }
 
-    private void setUpNodeAdder(AppCompatSpinner spinner) {
-        NodeAdderAdapter adapter = new NodeAdderAdapter(ctx, getListAvaNode());
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                NodeModel<NodeData> selectedItem = (NodeModel<NodeData>) parent.getItemAtPosition(position);
-
-                if (selectedItem != var && selectedItem != methods) {
-                    if (selectedItem.value.types == NodeTypes.VARIABLE) {
-                        treeView.getEditor().addChildNodes(var, selectedItem);
-                    }
-                    if (selectedItem.value.types == NodeTypes.METHOD) {
-                        treeView.getEditor().addChildNodes(methods, selectedItem);
-                    }
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Handle no selection
-            }
-        });
-    }
-
-    private List<NodeModel<NodeData>> getListAvaNode() {
-        List<NodeModel<NodeData>> nodes = new ArrayList<>();
-
-        if (!lexer.getMethods().isEmpty() || !lexer.getFields().isEmpty()) {
-            nodes.add(var);
-            for (FieldDeclaration declaration : lexer.getFields()) {
-                nodes.add(createNode(new NodeData(declaration.getVariables().get(0).getNameAsString(), declaration.toString(), NodeTypes.VARIABLE, new ClassNode(ctx), declaration)));
-            }
-
-            nodes.add(methods);
-            for (MethodDeclaration declaration : lexer.getMethods()) {
-                nodes.add(createNode(new NodeData(declaration.getNameAsString(), declaration.toString(), NodeTypes.METHOD, new MethodNode(ctx), declaration)));
-            }
-        }
-
-        return nodes;
-    }
-
     private ArrayList<NodeModel<NodeData>> getMaxNodes(NodeModel<NodeData> node) {
         ArrayList<NodeModel<NodeData>> nodeModels = new ArrayList<>();
         addUniqueNode(node, nodeModels);
@@ -226,16 +203,28 @@ public class EditorFragment extends Fragment {
     }
 
     private void addUniqueNode(NodeModel<NodeData> node, ArrayList<NodeModel<NodeData>> nodeModels) {
-        if (!nodeModels.contains(node)) nodeModels.add(node);
-        for (NodeModel<NodeData> childNode : node.getChildNodes())
+        if (!nodeModels.contains(node)) {
+            nodeModels.add(node);
+        }
+        for (NodeModel<NodeData> childNode : node.getChildNodes()) {
             addUniqueNode(childNode, nodeModels);
+        }
     }
 
     private NodeModel<NodeData> createNode(NodeData data) {
         return new NodeModel<>(data);
     }
 
-    private void updateUI() {
+
+    private void switchToCodeView() {
+        binding.drag.setText("Code To Node");
+        binding.code.setVisibility(View.VISIBLE);
+        treeView.setVisibility(View.INVISIBLE);
+    }
+
+    private void switchToNodeView() {
+        binding.drag.setText("Node To Code");
+        treeView.setVisibility(View.VISIBLE);
         binding.code.setVisibility(View.GONE);
     }
 
