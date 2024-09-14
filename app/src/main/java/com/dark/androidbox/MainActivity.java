@@ -11,7 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dark.androidbox.databinding.ActivityMainBinding;
 import com.dark.androidbox.fragments.EditorFragment;
+import com.dark.androidbox.fragments.TerminalFragment;
 import com.dark.androidbox.helper.StoragePermissionHelper;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
@@ -79,10 +84,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initEditorFragment() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.frame, new EditorFragment(null))
+                .add(R.id.frame, new TerminalFragment())
                 .commit();
-
-
     }
 
     /**

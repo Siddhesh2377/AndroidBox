@@ -48,10 +48,9 @@ public class EditorFragment extends Fragment {
     private NodeModel<NodeData> root, methods, var;
     private TreeModel<NodeData> treeModel;
     private final boolean isFirstCode = true;
-    private StringBuilder code;
 
-    public EditorFragment(StringBuilder code){
-        this.code = code;
+    public EditorFragment(){
+
     }
 
     @Nullable
