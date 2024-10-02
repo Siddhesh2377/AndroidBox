@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dark.androidbox.databinding.ActivityMainBinding;
 import com.dark.androidbox.fragments.EditorFragment;
+import com.dark.androidbox.fragments.TerminalFragment;
 import com.dark.androidbox.helper.StoragePermissionHelper;
 
 @SuppressLint("SetTextI18n")

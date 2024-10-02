@@ -5,6 +5,7 @@ androidxJunit = "1.2.1"
 appcompatVersion = "1.7.0"
 dynamicanimation = "1.0.0"
 espressoCoreVersion = "3.6.1"
+janino = "3.1.9"
 javaparserCore = "3.26.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -20,6 +21,7 @@ android-code-view = { module = "com.github.chen0040:android-code-view", version.
 appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version.ref = "dynamicanimation" }
 espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
+janino = { module = "org.codehaus.janino:janino", version.ref = "janino" }
 javaparser-core = { module = "com.github.javaparser:javaparser-core", version.ref = "javaparserCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

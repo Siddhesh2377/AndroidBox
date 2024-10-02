@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
 
 import com.dark.androidbox.Lexer;
+import com.dark.androidbox.R;
 import com.dark.androidbox.adapter.NodeSelector;
 import com.dark.androidbox.adapter.NodeViewAdapter;
 import com.dark.androidbox.codeView.Editor;
@@ -34,6 +37,9 @@ import com.gyso.treeview.line.SmoothLine;
 import com.gyso.treeview.model.NodeModel;
 import com.gyso.treeview.model.TreeModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @SuppressLint("SetTextI18n")
@@ -77,7 +83,7 @@ public class EditorFragment extends Fragment {
 
     private void setupViews() {
         treeView = binding.nodeView.treeview;
-        editor = new Editor(binding.code);
+        editor = new Editor(ctx, binding.code);
         lexer = new Lexer(new StringBuilder());
         adapter = new NodeViewAdapter();
     }
@@ -100,10 +106,44 @@ public class EditorFragment extends Fragment {
             }
         });
 
-        binding.center.setOnClickListener(view -> treeView.getEditor().focusMidLocation());
+        binding.center.setOnClickListener(view -> {
+            saveFileDirectly(binding.code.getText().toString());
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frame, new TerminalFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         treeView.treeViewGestureHandler.setOnDoubleTapListener(treeView.getEditor()::focusMidLocation);
     }
+
+    private void saveFileDirectly(String text) {
+        try {
+            // Define the directory and file
+            File directory = new File(Environment.getExternalStorageDirectory(), "AndroidBox");
+            if (!directory.exists()) {
+                if (!directory.mkdirs()) {
+                    Toast.makeText(requireContext(), "Failed to create directory.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            File file = new File(directory, "Main.java");
+
+            // Write the text to the file
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(text.getBytes());
+            fos.close();
+
+            Toast.makeText(requireContext(), "File saved to " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+        } catch (IOException e) {
+            Toast.makeText(requireContext(), "Error saving file: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     private void treeViewInit() {
         treeView.setAdapter(adapter);

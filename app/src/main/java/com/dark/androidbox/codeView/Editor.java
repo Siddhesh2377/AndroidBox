@@ -1,9 +1,15 @@
 package com.dark.androidbox.codeView;
 
+import android.content.Context;
 import android.graphics.Color;
-import com.amrdeveloper.codeview.CodeView;
 
+import com.amrdeveloper.codeview.CodeView;
+import com.amrdeveloper.codeview.KeywordTokenizer;
+import com.dark.androidbox.adapter.SnippetAdapter;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -17,9 +23,13 @@ public class Editor {
     private static final int COMMENT_COLOR = Color.parseColor("#808080");   // Gray for comments
     private static final int TEXT_COLOR = Color.parseColor("#000000");      // Black for default text
 
-    // Define patterns for Java keywords, class names, methods, variables, packages, and comments
+    // Define patterns for Java syntax highlighting
     private final Pattern keywordsPattern = Pattern.compile(
-            "\\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)\\b");
+            "\\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|" +
+                    "default|do|double|else|enum|extends|final|finally|float|for|goto|if|" +
+                    "implements|import|instanceof|int|interface|long|native|new|null|package|" +
+                    "private|protected|public|return|short|static|strictfp|super|switch|" +
+                    "synchronized|this|throw|throws|transient|try|void|volatile|while)\\b");
     private final Pattern classPattern = Pattern.compile(
             "\\b([A-Z][a-zA-Z0-9_]*)\\b");  // Captures class names starting with capital letters
     private final Pattern methodPattern = Pattern.compile(
@@ -32,8 +42,10 @@ public class Editor {
             "//[^\n]*|/\\*(.|\\R)*?\\*/"); // Single-line and multi-line comments
 
     public CodeView txtCode;
+    private final Context context;
 
-    public Editor(CodeView codeView) {
+    public Editor(Context context, CodeView codeView) {
+        this.context = context;
         this.txtCode = codeView;
         setUpEditor();
     }
@@ -60,6 +72,14 @@ public class Editor {
 
         // Apply syntax highlighting patterns
         applySyntaxHighlighting();
+
+        // Configure auto-complete
+        txtCode.setThreshold(1); // Start suggesting after typing 1 character
+        txtCode.setEnableAutoIndentation(true);
+        txtCode.setTokenizer(new KeywordTokenizer());
+
+        // Set up auto-complete suggestions
+        setUpAutoComplete();
     }
 
     private void applySyntaxHighlighting() {
@@ -70,6 +90,20 @@ public class Editor {
         txtCode.addSyntaxPattern(variablePattern, VARIABLE_COLOR); // Variables
         txtCode.addSyntaxPattern(packagePattern, PACKAGE_COLOR);   // Package names
         txtCode.addSyntaxPattern(commentPattern, COMMENT_COLOR);   // Comments
+    }
+
+    private void setUpAutoComplete() {
+        // Define the snippets to suggest
+        List<String> snippets = new ArrayList<>();
+        snippets.add("public static void main(String[] args) {\n    System.out.println(\"Hello World\");\n}");
+
+        // Create the custom adapter
+        SnippetAdapter snippetAdapter = new SnippetAdapter(context, android.R.layout.simple_list_item_1, snippets);
+
+        // Set the adapter to the CodeView
+        txtCode.setAdapter(snippetAdapter);
+        txtCode.setTokenizer(new KeywordTokenizer());
+        txtCode.setThreshold(1);  // Show suggestions after 1 character is typed
     }
 
     // Method to dynamically set color for specific target strings
